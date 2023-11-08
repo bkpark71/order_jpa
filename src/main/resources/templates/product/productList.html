@@ -16,13 +16,13 @@
         </thead>
         <tbody>
             <tr th:each="product : ${products}">
-                <td th:text="${product.productId}">
-                    <a th:href="@{/product/info?id=${product.productId}}">
+                <td>
+                    <a th:href="@{/product/info/{productId}(productId=${product.productId})}" th:text="${product.productId}">
                         productId
                     </a>
                 </td>
-                <td th:text="${product.name}">
-                    <a th:href="@{/product/info?id=${product.productId}}">
+                <td>
+                    <a th:href="@{/product/info/{productId}(productId=${product.productId})}" th:text="${product.name}">
                         name
                     </a>
                 </td>
