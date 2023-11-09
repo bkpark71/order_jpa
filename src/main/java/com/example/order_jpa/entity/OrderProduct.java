@@ -1,5 +1,6 @@
 package com.example.order_jpa.entity;
 
+import com.example.order_jpa.exception.NoEnoughStockException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,4 +24,19 @@ public class OrderProduct {
 
     private long orderPrice;
     private int orderQuantity;
+
+    public static OrderProduct createOrderProduct(Product product, int orderQuantity) throws NoEnoughStockException {
+        // orderProduct 생성
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setProduct(product);
+        orderProduct.setOrderPrice(product.getPrice() * orderQuantity);
+        orderProduct.setOrderQuantity(orderQuantity);
+        // 재고 감소
+        product.decreaseQuantity(orderQuantity);
+        return orderProduct;
+    }
+
+    public void cancelOrderProduct(){
+        this.getProduct().increaseQuantity(this.getOrderQuantity());
+    }
 }

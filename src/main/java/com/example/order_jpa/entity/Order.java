@@ -31,4 +31,34 @@ public class Order {
     private OrderStatus orderStatus;
     private long totalPrice;
     private int totalQuantity;
+
+    public void cancel(){
+        this.setOrderStatus(OrderStatus.CANCELLED);
+        for (OrderProduct orderProduct : this.orderProducts) {
+            orderProduct.cancelOrderProduct();
+        }
+    }
+    public void addOrderProduct(OrderProduct orderProduct){
+        orderProducts.add(orderProduct);
+        orderProduct.setOrder(this);
+    }
+    public static Order createOrder(User user, OrderProduct... orderProducts){
+        // order 생성
+        long totalPrice = 0L;
+        int totalQuantity = 0;
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setOrderDate(LocalDateTime.now());
+        order.setOrderStatus(OrderStatus.CREATED);
+        for(OrderProduct orderProduct : orderProducts){
+            totalPrice += orderProduct.getOrderPrice();
+            totalQuantity += orderProduct.getOrderQuantity();
+            order.addOrderProduct(orderProduct);
+        }
+        order.setTotalPrice(totalPrice);
+        order.setTotalQuantity(totalQuantity);
+
+        return order;
+    }
 }
