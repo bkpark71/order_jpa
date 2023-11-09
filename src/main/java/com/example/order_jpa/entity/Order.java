@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Order {
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @Column(name="order_date", length = 10)
-    private String orderDate;
+    private LocalDateTime orderDate;
     @Enumerated(value = EnumType.STRING)
     @Column(name="order_status", length = 10)
     private OrderStatus orderStatus;
