@@ -8,8 +8,11 @@ import com.example.order_jpa.exception.NoEnoughStockException;
 import com.example.order_jpa.service.OrderService;
 import com.example.order_jpa.service.ProductService;
 import com.example.order_jpa.service.UserService;
+import com.example.order_jpa.session.SessionConst;
+import com.example.order_jpa.session.UserSession;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -59,21 +62,26 @@ public class OrderController {
     @GetMapping("/add")
     public String addOrder(Model model,
                            HttpServletRequest request) {
-        // 로그인한 사용자의 정보를 쿠키로부터 얻어오기
+        // 로그인한 사용자의 정보를 세션으로부터 얻어오기
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies) {
             log.info("cookie.name ==> " + cookie.getName());
-            if(cookie.getName().equals("userId")) {
-                Long userId = Long.parseLong(cookie.getValue());
+            if(cookie.getName().equals(SessionConst.COOKIE_NAME)) {
+                HttpSession session = request.getSession(false);
+                UserSession userSession = (UserSession)session.getAttribute(cookie.getValue());
+                log.info("userSession == > " + userSession);
+
+                Long userId = userSession.getUserId();
                 User user = userService.getUserById(userId);
                 model.addAttribute("user", user);
+                // 사용자의 정보를 model 에 넘겨주기
+//                model.addAttribute("users", userService.getAllUsers());
+                model.addAttribute("products", productService.getAllProducts());
+                return "order/orderForm";
             }
             //System.out.println("cookie.name ==> " + cookie.getName());
         }
-        // 사용자의 정보를 model 에 넘겨주기
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("products", productService.getAllProducts());
-        return "order/orderForm";
+        return "redirect:/login";
     }
 
 
