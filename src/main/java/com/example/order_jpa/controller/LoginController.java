@@ -12,10 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -33,6 +30,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String login(@ModelAttribute UserLoginDto userLoginDto,
+                        @RequestParam(defaultValue = "/") String redirectURI,
                         HttpServletResponse response,
                         HttpServletRequest request){
         User loginUser = loginService.login(userLoginDto);
@@ -56,7 +54,7 @@ public class LoginController {
         cookie.setMaxAge(600);
         response.addCookie(cookie);
 
-        return "redirect:/order/add";
+        return "redirect:" + redirectURI;
     }
 
     @GetMapping("/logout")
