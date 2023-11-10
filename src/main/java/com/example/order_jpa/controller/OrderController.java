@@ -3,20 +3,26 @@ package com.example.order_jpa.controller;
 import com.example.order_jpa.dto.OrderDto;
 import com.example.order_jpa.entity.Order;
 import com.example.order_jpa.entity.OrderProduct;
+import com.example.order_jpa.entity.User;
 import com.example.order_jpa.exception.NoEnoughStockException;
 import com.example.order_jpa.service.OrderService;
 import com.example.order_jpa.service.ProductService;
 import com.example.order_jpa.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
+@Slf4j
 public class OrderController {
     private final OrderService orderService;
     private final ProductService productService;
@@ -37,7 +43,7 @@ public class OrderController {
         return "order/orderList";
     }
 
-    @PostMapping("/list/{orderId}")
+    @GetMapping("/cancel/{orderId}")
     public String cancelOrder(@PathVariable Long orderId) {
         orderService.cancelOrder(orderId);
         return "redirect:/order/list";
@@ -51,7 +57,20 @@ public class OrderController {
     }
 
     @GetMapping("/add")
-    public String addOrder(Model model) {
+    public String addOrder(Model model,
+                           HttpServletRequest request) {
+        // 로그인한 사용자의 정보를 쿠키로부터 얻어오기
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie : cookies) {
+            log.info("cookie.name ==> " + cookie.getName());
+            if(cookie.getName().equals("userId")) {
+                Long userId = Long.parseLong(cookie.getValue());
+                User user = userService.getUserById(userId);
+                model.addAttribute("user", user);
+            }
+            //System.out.println("cookie.name ==> " + cookie.getName());
+        }
+        // 사용자의 정보를 model 에 넘겨주기
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("products", productService.getAllProducts());
         return "order/orderForm";
