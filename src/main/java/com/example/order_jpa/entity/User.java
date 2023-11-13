@@ -1,6 +1,7 @@
 package com.example.order_jpa.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +15,6 @@ public class User {
     private Long userId;
     @Column(length = 45)
     private String name;
-
     @Column(length = 45, unique = true)
     private String email;
     @Column(length = 10)

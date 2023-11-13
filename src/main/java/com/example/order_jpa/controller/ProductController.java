@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public String updateProduct(@ModelAttribute ProductUpdateDto productUpdateDto) {
+    public String updateProduct(@Validated @ModelAttribute ProductUpdateDto productUpdateDto) {
         productService.updateProduct(productUpdateDto);
         return "redirect:/product/list";
     }

@@ -23,6 +23,11 @@ import java.util.UUID;
 public class LoginController {
     private final LoginService loginService;
 
+    @GetMapping
+    public String home(){
+        return "login/home";
+    }
+
     @GetMapping("/login")
     public String login(){
         return "login/loginForm";
